@@ -1,6 +1,7 @@
 package errors
 
 import (
+	"fmt"
 	"github.com/go-mysql-org/go-mysql/canal"
 	"log"
 	"regexp"
@@ -35,7 +36,8 @@ func (s *handler) OnRow(e *canal.RowsEvent) error {
 			`(?:(?P<net>[^\(]*)(?:\((?P<addr>[^\)]*)\))?)?` +
 			`\/(?P<dbname>.*?)` +
 			`(?:\?(?P<params>[^\?]*))?$`).FindStringSubmatch(s.dsn)
-	if e.Table.Schema == params[5] && e.Table.Name == "error_code" && (e.Action == "insert" || e.Action == "update" || e.Action == "delete") {
+	if e.Table.Schema == params[5] && e.Table.Name == "error_codes" && (e.Action == "insert" || e.Action == "update" || e.Action == "delete") {
+		fmt.Println(e)
 		register()
 	}
 	return nil
