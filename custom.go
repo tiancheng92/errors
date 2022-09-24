@@ -43,6 +43,25 @@ func register() {
 		errorCodeMap[list[i].ErrorCode] = customError
 		errorNameMap[list[i].Name] = customError
 	}
+
+	if _, ok := errorNameMap["Err_GRPC_Connection"]; !ok {
+		errorNameMap["Err_GRPC_Connection"] = &custom{
+			name:       "Err_GRPC_Connection",
+			errorCode:  50001,
+			grpcStatus: codes.Unavailable,
+			httpStatus: HttpStatus(codes.Unavailable),
+			message:    "无法连接至Grpc服务",
+		}
+	}
+	if _, ok := errorNameMap["Err_Unknown"]; !ok {
+		errorNameMap["Err_Unknown"] = &custom{
+			name:       "Err_Unknown",
+			errorCode:  50000,
+			grpcStatus: codes.Unknown,
+			httpStatus: HttpStatus(codes.Unknown),
+			message:    "未知错误",
+		}
+	}
 	errorDict.mux.Lock()
 	defer errorDict.mux.Unlock()
 
