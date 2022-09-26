@@ -34,7 +34,7 @@ func getAllErrorCode() []*ErrorCode {
 
 func initData() error {
 	var count int64
-	err := db.Where("name = 'Err_Unknown'").Count(&count).Error
+	err := db.Model(new(ErrorCode)).Where("name = 'Err_Unknown'").Count(&count).Error
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func initData() error {
 			return err
 		}
 	}
-	err = db.Where("name = 'Err_GRPC_Connection'").Count(&count).Error
+	err = db.Model(new(ErrorCode)).Where("name = 'Err_GRPC_Connection'").Count(&count).Error
 	if err != nil {
 		return err
 	}
