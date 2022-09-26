@@ -32,6 +32,41 @@ func getAllErrorCode() []*ErrorCode {
 	return res
 }
 
+func initData() error {
+	var count int64
+	err := db.Where("name = 'Err_Unknown'").Count(&count).Error
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		err = db.Create(&ErrorCode{
+			ErrorCode:  50000,
+			GrpcStatus: 2,
+			Name:       "Err_Unknown",
+			Message:    "未知错误",
+		}).Error
+		if err != nil {
+			return err
+		}
+	}
+	err = db.Where("name = 'Err_GRPC_Connection'").Count(&count).Error
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		err = db.Create(&ErrorCode{
+			ErrorCode:  50001,
+			GrpcStatus: 14,
+			Name:       "Err_GRPC_Connection",
+			Message:    "无法连接至Grpc服务",
+		}).Error
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func initDB(dsn string) {
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
@@ -45,6 +80,10 @@ func initDB(dsn string) {
 	}
 
 	if err = db.AutoMigrate(new(ErrorCode)); err != nil {
+		log.Panicf("%+v", err)
+	}
+
+	if err = initData(); err != nil {
 		log.Panicf("%+v", err)
 	}
 }
